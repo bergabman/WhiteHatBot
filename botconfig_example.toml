@@ -7,4 +7,5 @@ own_bot_token = ""
 marker = "--"
 
 # channels fot the bot to communicate on
-channel_ids = [""]
+# ex. channel_ids = [717108559525293147, 754320391173827756]
+channel_ids = []
