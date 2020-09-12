@@ -1,5 +1,10 @@
+# You have to rename this file to botconfig (botconfig.toml)
+
 # Bot token
 own_bot_token = ""
 
 # message marker
 marker = "--"
+
+# channels fot the bot to communicate on
+channel_ids = [""]

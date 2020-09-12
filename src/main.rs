@@ -9,6 +9,7 @@ use serenity::prelude::*;
 struct Config {
     marker: String,        // string to recognise discord messages
     own_bot_token: String, // own bot token used to make connection with discord server
+    channel_ids: Vec<String>
 }
 
 impl TypeMapKey for Config {
@@ -37,6 +38,7 @@ impl EventHandler for Handler {
     fn message(&self, ctx: Context, msg: Message) {
         let data = ctx.data.read();
         let config = data.get::<Config>().expect("Expected Config in SharedMap, Please check your botconfig.toml");
+        if config.
         if msg.content.starts_with(&config.marker) {
 
 
