@@ -2,13 +2,13 @@
 use anyhow::Result;
 use serde_derive::Deserialize;
 use serenity::model::channel::Message;
+use serenity::model::gateway::Ready;
 use serenity::prelude::*;
 
 #[derive(Debug, Deserialize)]
 struct Config {
     marker: String,        // string to recognise discord messages
     own_bot_token: String, // own bot token used to make connection with discord server
-    channel_id: u64,       // channel id we communicate on
 }
 
 impl TypeMapKey for Config {
@@ -34,7 +34,17 @@ fn main() -> Result<()> {
 struct Handler;
 
 impl EventHandler for Handler {
-    fn message(&self, ctx: Context, msg: Message) {}
+    fn message(&self, ctx: Context, msg: Message) {
+        let data = ctx.data.read();
+        let config = data.get::<Config>().expect("Expected Config in SharedMap, Please check your botconfig.toml");
+        if msg.content.starts_with(&config.marker) {
+
+
+        }
+    }
+
+    fn ready(&self, ctx: Context, ready: Ready) { 
+    }
 }
 
 fn loadconfig() -> Result<Config> {
