@@ -1,15 +1,8 @@
 #![allow(non_snake_case)]
 use anyhow::Result;
 use serde_derive::Deserialize;
-use serenity::model::{
-    channel::Message,
-    gateway::Ready,
-    id::ChannelId,
-};
-use serenity::{
-    prelude::*, 
-    utils::Colour
-};
+use serenity::model::{channel::Message, gateway::Ready, id::ChannelId};
+use serenity::{prelude::*, utils::Colour};
 use urlencoding::encode;
 
 #[derive(Debug, Deserialize)]
@@ -49,7 +42,7 @@ impl EventHandler for Handler {
             .get::<Config>()
             .expect("Expected Config in SharedMap, Please check your botconfig.toml");
         if config.channel_ids.contains(&msg.channel_id) {
-            if msg // --howtohack 
+            if msg // --howtohack
                 .content
                 .starts_with(&format!("{}howtohack", &config.marker))
             {
@@ -130,7 +123,9 @@ impl EventHandler for Handler {
                 .starts_with(&format!("{}google", &config.marker))
             {
                 let base = "https://lmgtfy.com/?q={}&s=d";
-                let toencode = msg.content.replace(&format!("{}google ", &config.marker), "");
+                let toencode = msg
+                    .content
+                    .replace(&format!("{}google ", &config.marker), "");
                 let encoded = encode(&toencode);
                 let tosend = base.replace("{}", &encoded);
                 if let Err(why) = msg.channel_id.say(&ctx, tosend) {
