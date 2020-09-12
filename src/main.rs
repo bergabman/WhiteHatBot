@@ -49,7 +49,7 @@ impl EventHandler for Handler {
             .get::<Config>()
             .expect("Expected Config in SharedMap, Please check your botconfig.toml");
         if config.channel_ids.contains(&msg.channel_id) {
-            if msg
+            if msg // --howtohack 
                 .content
                 .starts_with(&format!("{}howtohack", &config.marker))
             {
@@ -125,7 +125,7 @@ impl EventHandler for Handler {
                     });
                     m
                 });
-            } else if msg
+            } else if msg //  --google
                 .content
                 .starts_with(&format!("{}google", &config.marker))
             {
