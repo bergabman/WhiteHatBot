@@ -129,7 +129,13 @@ impl EventHandler for Handler {
                 .content
                 .starts_with(&format!("{}google", &config.marker))
             {
-                todo!();
+                let base = "https://lmgtfy.com/?q={}&s=d";
+                let toencode = msg.content.replace(&format!("{}google ", &config.marker), "");
+                let encoded = encode(&toencode);
+                let tosend = base.replace("{}", &encoded);
+                if let Err(why) = msg.channel_id.say(&ctx, tosend) {
+                    println!("Error sending message: {:?}", why);
+                }
             }
         }
     }
