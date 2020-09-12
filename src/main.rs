@@ -1,12 +1,15 @@
 #![allow(non_snake_case)]
 use anyhow::Result;
 use serde_derive::Deserialize;
-use serenity::model::channel::Message;
-use serenity::model::gateway::Ready;
-use serenity::model::id::ChannelId;
-// use serenity::http::AttachmentType;
-use serenity::prelude::*;
-use serenity::utils::Colour;
+use serenity::model::{
+    channel::Message,
+    gateway::Ready,
+    id::ChannelId,
+};
+use serenity::{
+    prelude::*, 
+    utils::Colour
+};
 use urlencoding::encode;
 
 #[derive(Debug, Deserialize)]
@@ -22,7 +25,8 @@ impl TypeMapKey for Config {
 
 fn main() -> Result<()> {
     let config: Config = loadconfig().expect("Can't load configfile botconfig.toml, Please make sure you have one next to the executable and it's correct.");
-    println!("Botconfig decoded {:?}", &config);
+    println!("Botconfig loaded {:?}", &config);
+
     let mut client = Client::new(&config.own_bot_token, Handler).expect("Error creating client");
     {
         let mut data = client.data.write(); //  adding config to context, so we can access it in the shard
@@ -125,7 +129,7 @@ impl EventHandler for Handler {
                 .content
                 .starts_with(&format!("{}google", &config.marker))
             {
-
+                todo!();
             }
         }
     }
