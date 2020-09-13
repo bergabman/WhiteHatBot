@@ -7,9 +7,9 @@ use urlencoding::encode;
 
 #[derive(Debug, Deserialize)]
 struct Config {
-    marker: String,        // string to recognise discord messages
-    own_bot_token: String, // own bot token used to make connection with discord server
-    channel_ids: Vec<ChannelId>,
+    marker: String,                 // Marker string to recognise discord messages sent to the bot, defind in botconfig.toml.
+    own_bot_token: String,          // Own bot token used to connect with discord.
+    channel_ids: Vec<ChannelId>,    // Channels the bot listens on, definsed in botconfig.toml.
 }
 
 impl TypeMapKey for Config {
@@ -21,8 +21,11 @@ fn main() -> Result<()> {
     println!("Botconfig loaded {:?}", &config);
 
     let mut client = Client::new(&config.own_bot_token, Handler).expect("Error creating client");
+
+    // Addconfig data to bot context so it becomes accessible throughout the bot.
+    // It is in a separate scope to drop the mutable reference right after we add the config. 
     {
-        let mut data = client.data.write(); //  adding config to context, so we can access it in the shard
+        let mut data = client.data.write();
         data.insert::<Config>(config);
     }
 
@@ -33,18 +36,23 @@ fn main() -> Result<()> {
     Ok(())
 }
 
+// Unit struct, so we can implement an EnentHandler.
 struct Handler;
 
 impl EventHandler for Handler {
+    // Messages from all channels where the bot is present. Good practice to first filter out messages we are not interested in.
     fn message(&self, ctx: Context, msg: Message) {
         let data = ctx.data.read();
         let config = data
             .get::<Config>()
             .expect("Expected Config in SharedMap, Please check your botconfig.toml");
+        
+        // First filter, only predefined ChannelID-s will be checked further.
         if config.channel_ids.contains(&msg.channel_id) {
-            if msg // --howtohack
+            // --howtohack function returns information and resources.
+            if msg 
                 .content
-                .starts_with(&format!("{}howtohack", &config.marker))
+                .starts_with(&format!("{}howtohack ", &config.marker))
             {
                 let mut message1 = msg
                     .channel_id
@@ -125,9 +133,10 @@ impl EventHandler for Handler {
                     });
                     m
                 });
-            } else if msg //  --google
+            // --google function simply creates a lmgtfy link with the given arguments.
+            } else if msg 
                 .content
-                .starts_with(&format!("{}google", &config.marker))
+                .starts_with(&format!("{}google ", &config.marker))
             {
                 let base = "https://lmgtfy.com/?q={}&s=d";
                 let toencode = msg
@@ -141,14 +150,14 @@ impl EventHandler for Handler {
             }
         }
     }
-
+    // bot ready event.
     fn ready(&self, _ctx: Context, ready: Ready) {
         println!("{} is connected!", ready.user.name);
     }
 }
 
+// loading bot config file.
 fn loadconfig() -> Result<Config> {
-    // loading bot config file
     let configtoml = std::fs::read_to_string("botconfig.toml")?;
     let decoded: Config = toml::from_str(&configtoml)?;
     Ok(decoded)
