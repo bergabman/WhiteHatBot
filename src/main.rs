@@ -22,7 +22,7 @@ fn main() -> Result<()> {
 
     let mut client = Client::new(&config.own_bot_token, Handler).expect("Error creating client");
 
-    // Addconfig data to bot context so it becomes accessible throughout the bot.
+    // Add config data to bot context so it becomes accessible throughout the bot.
     // It is in a separate scope to drop the mutable reference right after we add the config. 
     {
         let mut data = client.data.write();
@@ -36,7 +36,7 @@ fn main() -> Result<()> {
     Ok(())
 }
 
-// Unit struct, so we can implement an EnentHandler.
+// Unit struct, so we can implement an EventHandler.
 struct Handler;
 
 impl EventHandler for Handler {
@@ -150,13 +150,13 @@ impl EventHandler for Handler {
             }
         }
     }
-    // bot ready event.
+    // Bot ready event.
     fn ready(&self, _ctx: Context, ready: Ready) {
         println!("{} is connected!", ready.user.name);
     }
 }
 
-// loading bot config file.
+// Loading bot config file.
 fn loadconfig() -> Result<Config> {
     let configtoml = std::fs::read_to_string("botconfig.toml")?;
     let decoded: Config = toml::from_str(&configtoml)?;
