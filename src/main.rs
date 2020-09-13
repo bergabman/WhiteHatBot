@@ -17,7 +17,7 @@ impl TypeMapKey for Config {
 }
 
 fn main() -> Result<()> {
-    let config: Config = loadconfig().expect("Can't load configfile botconfig.toml, Please make sure you have one next to the executable and it's correct.");
+    let config: Config = loadconfig().expect("Can't load config file: botconfig.toml. Please make sure you have one next to the executable and it's correct.");
     println!("Botconfig loaded {:?}", &config);
 
     let mut client = Client::new(&config.own_bot_token, Handler).expect("Error creating client");
