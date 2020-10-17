@@ -15,4 +15,4 @@ Credits goes to him for the function ideas and javascript implementation!
 
 If you want to run the bot on a Raspberry Pi 2/3/4, use `rust cross` to compile the executable. 
 
-cross build --target aarch64-unknown-linux-gnu
+cross build +nightly --target aarch64-unknown-linux-gnu --release
