@@ -26,18 +26,48 @@ pub async fn multiply(ctx: &Context, msg: &Message, mut args: Args) -> CommandRe
     let one = match args.single::<f64>() {
         Ok(one) => one,
         Err(_) => {
-            msg.channel_id.say(&ctx.http, "You what?").await?;
+            msg.reply(&ctx.http, "You what?").await?;
             return Ok(());
         }
     };
     let two = match args.single::<f64>() {
         Ok(two) => two,
         Err(_) => {
-            msg.channel_id.say(&ctx.http, "You what?").await?;
+            msg.reply(&ctx.http, "You what?").await?;
             return Ok(());
         }
     };
     let product = one * two;
+
+    msg.channel_id.say(&ctx.http, product).await?;
+
+    Ok(())
+}
+
+#[command]
+pub async fn divide(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
+    let data = ctx.data.read().await;
+    let config = data
+        .get::<Config>()
+        .expect("Expected Config in SharedMap, Please check your botconfig.toml");
+    if !config.channel_ids.contains(&msg.channel_id) {
+        return Ok(())
+    }
+    let one = match args.single::<f64>() {
+        Ok(one) => one,
+        Err(_) => {
+            msg.reply(&ctx.http, "You what?").await?;
+            return Ok(());
+        }
+    };
+    let two = match args.single::<f64>() {
+        Ok(two) => two,
+        Err(_) => {
+            msg.reply(&ctx.http, "You what?").await?;
+            return Ok(());
+        }
+    };
+    let product = one / two;
 
     msg.channel_id.say(&ctx.http, product).await?;
 
@@ -151,7 +181,7 @@ pub async fn google(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
     }
     let base = "https://lmddgtfy.net/?q={}";
     if &args.message() == &"" {
-        msg.reply(&ctx, "No arguments found").await?;
+        msg.reply(&ctx, "Hmm? No arguments found.").await?;
         return Ok(());
     }
     let encoded = encode(&args.message());
@@ -175,12 +205,10 @@ pub async fn ping(ctx: &Context, msg: &Message) -> CommandResult {
     if let Some(manager) = data.get::<ShardManagerContainer>() {
         let lock = manager.lock().await;
         let shard_runners = lock.runners.lock().await;
-        for (id, runner) in shard_runners.iter() {
+        for (_id, runner) in shard_runners.iter() {
             let shard = format!(
-                "Shard ID {} is {} with a latency of {:?}",
-                id,
-                runner.stage,
-                runner.latency,
+                "Pong! Latency {:?}",
+                runner.latency.unwrap_or(Duration::from_millis(999)),
             );
             msg.reply(ctx, shard).await?;
         }
