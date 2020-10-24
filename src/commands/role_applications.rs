@@ -1,27 +1,19 @@
-use std::path::Path;
 use crate::Config;
 use crate::ShardManagerContainer;
+use std::path::Path;
 
-use serenity::{
-    prelude::*, 
-    http::AttachmentType,
-    utils::MessageBuilder,
-};
+use serenity::framework::standard::{macros::command, Args, CommandResult};
 use serenity::model::prelude::*;
-use serenity::framework::standard::{
-    Args, CommandResult,
-    macros::command,
-};
+use serenity::{http::AttachmentType, prelude::*, utils::MessageBuilder};
 
 #[command]
 pub async fn apply(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
-
     let data = ctx.data.read().await;
     let config = data
         .get::<Config>()
         .expect("Expected Config in SharedMap, Please check your botconfig.toml");
     if !config.channel_ids.contains(&msg.channel_id) {
-        return Ok(())
+        return Ok(());
     }
     let first_arg = match args.single::<String>() {
         Ok(first_arg) => first_arg,
@@ -36,7 +28,7 @@ pub async fn apply(ctx: &Context, msg: &Message, mut args: Args) -> CommandResul
         Err(why) => {
             println!("Error getting channel: {:?}", why);
             return Ok(());
-        },
+        }
     };
     let channel_type = msg.channel(&ctx.cache).await.unwrap();
     let value = "&";
@@ -47,18 +39,19 @@ pub async fn apply(ctx: &Context, msg: &Message, mut args: Args) -> CommandResul
         .push_bold_safe(&msg.author.id)
         .push("channelType ")
         .push_bold_safe(channel_type)
-
         .push(" used the 'apply' command in the ")
         .mention(&channel)
         .push(" channel")
         .push_mono(value)
         .build();
 
-    msg.author.dm(&ctx, |m| {
-        m.content("ssup");
+    msg.author
+        .dm(&ctx, |m| {
+            m.content("ssup");
 
-        m
-    }).await?;
+            m
+        })
+        .await?;
     if let Err(why) = msg.channel_id.say(&ctx.http, &response).await {
         println!("Error sending message: {:?}", why);
     }
@@ -85,7 +78,6 @@ pub async fn apply(ctx: &Context, msg: &Message, mut args: Args) -> CommandResul
     //     m.add_file(AttachmentType::Path(Path::new("./ferris_eyes.png")));
     //     m
     // }).await?;
-
 
     // msg.channel_id.say(&ctx.http, "ok").await?;
 

@@ -1,18 +1,11 @@
 use crate::Config;
 use crate::ShardManagerContainer;
 
-use serenity::{
-    prelude::*, 
-    utils::Colour,
-};
+use serenity::framework::standard::{macros::command, Args, CommandResult};
 use serenity::model::prelude::*;
-use serenity::framework::standard::{
-    Args, CommandResult,
-    macros::command,
-};
+use serenity::{prelude::*, utils::Colour};
 use tokio::time::{delay_for, Duration};
 use urlencoding::encode;
-
 
 #[command]
 pub async fn multiply(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
@@ -21,7 +14,7 @@ pub async fn multiply(ctx: &Context, msg: &Message, mut args: Args) -> CommandRe
         .get::<Config>()
         .expect("Expected Config in SharedMap, Please check your botconfig.toml");
     if !config.channel_ids.contains(&msg.channel_id) {
-        return Ok(())
+        return Ok(());
     }
     let one = match args.single::<f64>() {
         Ok(one) => one,
@@ -51,7 +44,7 @@ pub async fn divide(ctx: &Context, msg: &Message, mut args: Args) -> CommandResu
         .get::<Config>()
         .expect("Expected Config in SharedMap, Please check your botconfig.toml");
     if !config.channel_ids.contains(&msg.channel_id) {
-        return Ok(())
+        return Ok(());
     }
     let one = match args.single::<f64>() {
         Ok(one) => one,
@@ -81,7 +74,7 @@ pub async fn hacksplain(ctx: &Context, msg: &Message) -> CommandResult {
         .get::<Config>()
         .expect("Expected Config in SharedMap, Please check your botconfig.toml");
     if !config.channel_ids.contains(&msg.channel_id) {
-        return Ok(())
+        return Ok(());
     }
 
     msg.channel_id.say(&ctx.http, "You just need to know how to G7 DLL inject the kernel with making a GUI to get any IP you want, does not matter if P2P or E2E can find anything...".to_string()).await?;
@@ -114,8 +107,7 @@ pub async fn howtohack(ctx: &Context, msg: &Message) -> CommandResult {
                 "https://tenor.com/view/typing-fast-computer-silly-gif-14629981".to_string(),
             )
             .await?;
-        
-        
+
         delay_for(Duration::from_millis(6000)).await;
 
         let _ = message1.edit(&ctx, |m| {
@@ -179,20 +171,18 @@ pub async fn howtohack(ctx: &Context, msg: &Message) -> CommandResult {
             });
             m
         }).await?;
-
     }
     Ok(())
 }
 
 #[command]
-pub async fn google(ctx: &Context, msg: &Message, args: Args) -> CommandResult { 
-
+pub async fn google(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
     let data = ctx.data.read().await;
     let config = data
         .get::<Config>()
         .expect("Expected Config in SharedMap, Please check your botconfig.toml");
     if !config.channel_ids.contains(&msg.channel_id) {
-        return Ok(())
+        return Ok(());
     }
     let base = "https://lmddgtfy.net/?q={}";
     if &args.message() == &"" {
@@ -206,15 +196,13 @@ pub async fn google(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
 }
 
 #[command]
-pub async fn ping(ctx: &Context, msg: &Message) -> CommandResult { 
-    
-
+pub async fn ping(ctx: &Context, msg: &Message) -> CommandResult {
     let data = ctx.data.read().await;
     let config = data
         .get::<Config>()
         .expect("Expected Config in SharedMap, Please check your botconfig.toml");
     if !config.channel_ids.contains(&msg.channel_id) {
-        return Ok(())
+        return Ok(());
     }
 
     if let Some(manager) = data.get::<ShardManagerContainer>() {

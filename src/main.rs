@@ -1,38 +1,25 @@
 #![allow(non_snake_case)]
 
 mod commands;
-use commands::{
-    owner::*,
-    common::*,
-    role_applications::*,
-};
+use commands::{common::*, owner::*, role_applications::*};
 
 use anyhow::Result;
 use serde_derive::Deserialize;
 use serenity::model::{channel::Message, id::ChannelId};
 use serenity::{prelude::*, utils::Colour};
 
-use std::{
-    collections::HashSet,
-    sync::Arc,
-};
+use std::{collections::HashSet, sync::Arc};
 
 use serenity::{
     async_trait,
     client::bridge::gateway::ShardManager,
-    framework::{
-        StandardFramework,
-        standard::macros::group,
-    },
+    framework::{standard::macros::group, StandardFramework},
     http::Http,
     model::{event::ResumedEvent, gateway::Ready},
     prelude::*,
 };
 use tracing::{error, info};
-use tracing_subscriber::{
-    FmtSubscriber,
-    EnvFilter,
-};
+use tracing_subscriber::{EnvFilter, FmtSubscriber};
 
 #[derive(Debug, Deserialize)]
 struct Config {
@@ -70,7 +57,7 @@ struct General;
 
 #[tokio::main]
 async fn main() {
-    // Load botconfig.toml 
+    // Load botconfig.toml
     let config: Config = loadconfig().expect("Can't load config file: botconfig.toml. Please make sure you have one next to the executable and it's correct.");
     info!("Botconfig loaded {:?}", &config);
 
@@ -90,15 +77,13 @@ async fn main() {
             owners.insert(info.owner.id);
 
             (owners, info.id)
-        },
+        }
         Err(why) => panic!("Could not access application info: {:?}", why),
     };
 
     // Create the framework
     let framework = StandardFramework::new()
-        .configure(|c| c
-                   .owners(owners)
-                   .prefix(&config.marker))
+        .configure(|c| c.owners(owners).prefix(&config.marker))
         .group(&GENERAL_GROUP);
 
     let mut client = Client::builder(&config.own_bot_token)
@@ -118,7 +103,9 @@ async fn main() {
     let shard_manager = client.shard_manager.clone();
 
     tokio::spawn(async move {
-        tokio::signal::ctrl_c().await.expect("Could not register ctrl+c handler");
+        tokio::signal::ctrl_c()
+            .await
+            .expect("Could not register ctrl+c handler");
         shard_manager.lock().await.shutdown_all().await;
     });
 
