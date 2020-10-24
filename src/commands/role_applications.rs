@@ -15,6 +15,14 @@ use serenity::framework::standard::{
 
 #[command]
 pub async fn apply(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
+
+    let data = ctx.data.read().await;
+    let config = data
+        .get::<Config>()
+        .expect("Expected Config in SharedMap, Please check your botconfig.toml");
+    if !config.channel_ids.contains(&msg.channel_id) {
+        return Ok(())
+    }
     let first_arg = match args.single::<String>() {
         Ok(first_arg) => first_arg,
         Err(_) => {

@@ -16,6 +16,13 @@ use urlencoding::encode;
 
 #[command]
 pub async fn multiply(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
+    let data = ctx.data.read().await;
+    let config = data
+        .get::<Config>()
+        .expect("Expected Config in SharedMap, Please check your botconfig.toml");
+    if !config.channel_ids.contains(&msg.channel_id) {
+        return Ok(())
+    }
     let one = match args.single::<f64>() {
         Ok(one) => one,
         Err(_) => {
@@ -155,8 +162,15 @@ pub async fn google(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
 
 #[command]
 pub async fn ping(ctx: &Context, msg: &Message) -> CommandResult { 
+    
 
     let data = ctx.data.read().await;
+    let config = data
+        .get::<Config>()
+        .expect("Expected Config in SharedMap, Please check your botconfig.toml");
+    if !config.channel_ids.contains(&msg.channel_id) {
+        return Ok(())
+    }
 
     if let Some(manager) = data.get::<ShardManagerContainer>() {
         let lock = manager.lock().await;
