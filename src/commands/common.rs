@@ -75,6 +75,21 @@ pub async fn divide(ctx: &Context, msg: &Message, mut args: Args) -> CommandResu
 }
 
 #[command]
+pub async fn hacksplain(ctx: &Context, msg: &Message) -> CommandResult {
+    let data = ctx.data.read().await;
+    let config = data
+        .get::<Config>()
+        .expect("Expected Config in SharedMap, Please check your botconfig.toml");
+    if !config.channel_ids.contains(&msg.channel_id) {
+        return Ok(())
+    }
+
+    msg.channel_id.say(&ctx.http, "You just need to know how to G7 DLL inject the kernel with making a GUI to get any IP you want, does not matter if P2P or E2E can find anything...".to_string()).await?;
+
+    Ok(())
+}
+
+#[command]
 pub async fn howtohack(ctx: &Context, msg: &Message) -> CommandResult {
     let data = ctx.data.read().await;
     let config = data

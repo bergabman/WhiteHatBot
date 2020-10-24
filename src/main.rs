@@ -57,24 +57,22 @@ struct Handler;
 impl EventHandler for Handler {
     async fn ready(&self, _: Context, ready: Ready) {
         info!("Connected as {}", ready.user.name);
-        println!("Connected as {}", ready.user.name);
     }
 
     async fn resume(&self, _: Context, _: ResumedEvent) {
         info!("Resumed");
-        println!("Resumed");
     }
 }
 
 #[group]
-#[commands(quit, multiply, howtohack, google, ping, apply)]
+#[commands(quit, multiply, divide, howtohack, hacksplain, google, ping, apply)]
 struct General;
 
 #[tokio::main]
 async fn main() {
     // Load botconfig.toml 
     let config: Config = loadconfig().expect("Can't load config file: botconfig.toml. Please make sure you have one next to the executable and it's correct.");
-    println!("Botconfig loaded {:?}", &config);
+    info!("Botconfig loaded {:?}", &config);
 
     // Initialize the logger to use environment variables. `RUST_LOG`
     let subscriber = FmtSubscriber::builder()
@@ -100,7 +98,7 @@ async fn main() {
     let framework = StandardFramework::new()
         .configure(|c| c
                    .owners(owners)
-                   .prefix("--"))
+                   .prefix(&config.marker))
         .group(&GENERAL_GROUP);
 
     let mut client = Client::builder(&config.own_bot_token)
