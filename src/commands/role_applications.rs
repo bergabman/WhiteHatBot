@@ -1,10 +1,10 @@
 use crate::Config;
-use crate::ShardManagerContainer;
-use std::path::Path;
+
+
 
 use serenity::framework::standard::{macros::command, Args, CommandResult};
 use serenity::model::prelude::*;
-use serenity::{http::AttachmentType, prelude::*, utils::MessageBuilder};
+use serenity::{prelude::*, utils::MessageBuilder};
 
 #[command]
 pub async fn apply(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
@@ -15,7 +15,7 @@ pub async fn apply(ctx: &Context, msg: &Message, mut args: Args) -> CommandResul
     if !config.channel_ids.contains(&msg.channel_id) {
         return Ok(());
     }
-    let first_arg = match args.single::<String>() {
+    let _first_arg = match args.single::<String>() {
         Ok(first_arg) => first_arg,
         Err(_) => {
             msg.reply(&ctx.http, "You what?").await?;

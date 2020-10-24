@@ -5,8 +5,8 @@ use commands::{common::*, owner::*, role_applications::*};
 
 use anyhow::Result;
 use serde_derive::Deserialize;
-use serenity::model::{channel::Message, id::ChannelId};
-use serenity::{prelude::*, utils::Colour};
+use serenity::model::{id::ChannelId};
+use serenity::{prelude::*};
 
 use std::{collections::HashSet, sync::Arc};
 
@@ -16,9 +16,8 @@ use serenity::{
     framework::{standard::macros::group, StandardFramework},
     http::Http,
     model::{event::ResumedEvent, gateway::Ready},
-    prelude::*,
 };
-use tracing::{error, info};
+use tracing::{info};
 use tracing_subscriber::{EnvFilter, FmtSubscriber};
 
 #[derive(Debug, Deserialize)]

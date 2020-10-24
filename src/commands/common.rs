@@ -185,7 +185,7 @@ pub async fn google(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
         return Ok(());
     }
     let base = "https://lmddgtfy.net/?q={}";
-    if &args.message() == &"" {
+    if args.message() == "" {
         msg.reply(&ctx, "Hmm? No arguments found.").await?;
         return Ok(());
     }
@@ -211,7 +211,7 @@ pub async fn ping(ctx: &Context, msg: &Message) -> CommandResult {
         for (_id, runner) in shard_runners.iter() {
             let shard = format!(
                 "Pong! Latency {:?}",
-                runner.latency.unwrap_or(Duration::from_millis(999)),
+                runner.latency.unwrap_or_else(|| Duration::from_millis(999)),
             );
             msg.reply(ctx, shard).await?;
         }
