@@ -1,11 +1,11 @@
 #![allow(non_snake_case)]
 
 mod commands;
-use commands::{common::*, owner::*, role_applications::*};
+use commands::{common::*, owner::*, role_applications::*, no_prefix::*};
 
 use anyhow::Result;
 use serde_derive::Deserialize;
-use serenity::model::{id::ChannelId};
+use serenity::model::{id::ChannelId, channel::Message};
 use serenity::{prelude::*};
 
 use std::{collections::HashSet, sync::Arc};
@@ -37,12 +37,56 @@ impl TypeMapKey for Config {
     type Value = Config;
 }
 
-struct Handler;
+pub struct Handler;
 
 #[async_trait]
 impl EventHandler for Handler {
     async fn ready(&self, _: Context, ready: Ready) {
         info!("Connected as {}", ready.user.name);
+    }
+
+    async fn message(&self, ctx: Context, msg: Message) {
+
+        no_prefix(&ctx, &msg).await;
+
+        if msg.is_private() {
+            println!("message received {}", msg.content);
+            println!("message received {}", msg.timestamp);
+            println!("message received {}", msg.author);
+
+        }
+        if msg.content == "!hello" {
+            // The create message builder allows you to easily create embeds and messages
+            // using a builder syntax.
+            // This example will create a message that says "Hello, World!", with an embed that has
+            // a title, description, three fields, and a footer.
+            let msg = msg.channel_id.send_message(&ctx.http, |m| {
+                m.content("Hello, World for all!");
+                m.embed(|e| {
+                    e.title("This is a title");
+                    e.description("This is a description");
+                    e.image("attachment://ferris_eyes.png");
+                    e.fields(vec![
+                        ("This is the first field", "This is a field body", true),
+                        ("This is the second field", "Both of these fields are inline", true),
+                    ]);
+                    e.field("This is the third field", "This is not an inline field", false);
+                    e.footer(|f| {
+                        f.text("This is a footer");
+
+                        f
+                    });
+
+                    e
+                });
+                // m.add_file(AttachmentType::Path(Path::new("./ferris_eyes.png")));
+                m
+            }).await;
+
+            if let Err(why) = msg {
+                println!("Error sending message: {:?}", why);
+            }
+        }
     }
 
     async fn resume(&self, _: Context, _: ResumedEvent) {
@@ -51,7 +95,7 @@ impl EventHandler for Handler {
 }
 
 #[group]
-#[commands(quit, multiply, divide, howtohack, hacksplain, google, ping, apply)]
+#[commands(quit, multiply, divide, howtohack, hacksplain, google, ping, apply, m)]
 struct General;
 
 #[tokio::main]
@@ -82,7 +126,7 @@ async fn main() {
 
     // Create the framework
     let framework = StandardFramework::new()
-        .configure(|c| c.owners(owners).prefix(&config.marker))
+        .configure(|c| c.owners(owners).prefix(&config.marker).no_dm_prefix(true) )
         .group(&GENERAL_GROUP);
 
     let mut client = Client::builder(&config.own_bot_token)

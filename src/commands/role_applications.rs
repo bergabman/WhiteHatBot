@@ -1,10 +1,9 @@
 use crate::Config;
 
-
-
 use serenity::framework::standard::{macros::command, Args, CommandResult};
 use serenity::model::prelude::*;
 use serenity::{prelude::*, utils::MessageBuilder};
+use serenity::model::channel::GuildChannel;
 
 #[command]
 pub async fn apply(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
@@ -83,3 +82,50 @@ pub async fn apply(ctx: &Context, msg: &Message, mut args: Args) -> CommandResul
 
     Ok(())
 }
+
+#[command]
+#[only_in(dm)]
+pub async fn m(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
+
+    msg.author
+        .dm(&ctx, |m| {
+            m.content("ssup");
+            m.embed(|e| {
+                e.title("This is a title");
+                e.description("This is a description");
+                e.image("attachment://ferris_eyes.png");
+                e.fields(vec![
+                    ("This is the first argument", "This is a field body", true),
+                    ("This is the second field", "Both of these fields are inline", true),
+                ]);
+                e.field("First argument", &args.message(), false);
+                e.footer(|f| {
+                    f.text("This is a footer");
+    
+                    f
+                });
+    
+                e
+            });
+            m
+        })
+        .await?;
+
+    msg.is_private();
+    Ok(())
+}
+
+// pub fn create_hidden_channel(name: String, guild_id: GuildId) -> Result<GuildChannel> {
+
+//     // let main_channel: GuildId = 771849934286618685;
+//     let new_channel = GuildId(771849934286618685).create_channel(|channel| channel.name(name).kind(ChannelType::Text))
+//         .chain_err(|| "failed to create new channel")?;
+
+//     // block the channel for everyone who hasn't clicked the checkmark. see process_checkmark().
+//     hide_channel(
+//         &new_channel,
+//         from_role_id(everyone_role(guild_id).chain_err(|| "failed to find @everyone RoleId")?),
+//     ).chain_err(|| "failed to configure new channel")?;
+
+//     Ok(new_channel)
+// }
