@@ -3,7 +3,6 @@ use crate::Config;
 use serenity::framework::standard::{macros::command, Args, CommandResult};
 use serenity::model::prelude::*;
 use serenity::{prelude::*, utils::MessageBuilder};
-use serenity::model::channel::GuildChannel;
 
 #[command]
 pub async fn apply(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
@@ -14,104 +13,63 @@ pub async fn apply(ctx: &Context, msg: &Message, mut args: Args) -> CommandResul
     if !config.channel_ids.contains(&msg.channel_id) {
         return Ok(());
     }
-    let _first_arg = match args.single::<String>() {
-        Ok(first_arg) => first_arg,
+
+    let mut level = match args.single::<String>() {
+        Ok(level) => level,
         Err(_) => {
-            msg.reply(&ctx.http, "You what?").await?;
+            apply_command_help(&ctx, &msg).await?;
             return Ok(());
-        }
+        },
     };
+    let mut haxor_level = "";
 
-    let channel = match msg.channel_id.to_channel(&ctx).await {
-        Ok(channel) => channel,
-        Err(why) => {
-            println!("Error getting channel: {:?}", why);
-            return Ok(());
-        }
-    };
-    let channel_type = msg.channel(&ctx.cache).await.unwrap();
-    let value = "&";
-    let response = MessageBuilder::new()
-        .push("User ")
-        .push_bold_safe(&msg.author.name)
-        .push("UserID ")
-        .push_bold_safe(&msg.author.id)
-        .push("channelType ")
-        .push_bold_safe(channel_type)
-        .push(" used the 'apply' command in the ")
-        .mention(&channel)
-        .push(" channel")
-        .push_mono(value)
-        .build();
-
-    msg.author
-        .dm(&ctx, |m| {
-            m.content("ssup");
-
-            m
-        })
-        .await?;
-    if let Err(why) = msg.channel_id.say(&ctx.http, &response).await {
-        println!("Error sending message: {:?}", why);
+    if level == "g" || level == "good" {
+        haxor_level = "Good";
+    } else if level == "e" || level == "experienced" {
+        haxor_level = "Experienced";
+    } else if level == "m" || level == "master"{
+        haxor_level = "Master";
+    } else {
+        apply_command_help(&ctx, &msg).await?;
+        return Ok(());
     }
 
-    // let msg = msg.channel_id.send_message(&ctx.http, |m| {
-    //     m.content("Hello, World!");
-    //     m.embed(|e| {
-    //         e.title("This is a title");
-    //         e.description("This is a description");
-    //         e.image("attachment://ferris_eyes.png");
-    //         e.fields(vec![
-    //             ("This is the first argument", "This is a field body", true),
-    //             ("This is the second field", "Both of these fields are inline", true),
-    //         ]);
-    //         e.field("First argument", &first_arg, false);
-    //         e.footer(|f| {
-    //             f.text("This is a footer");
-
-    //             f
-    //         });
-
-    //         e
-    //     });
-    //     m.add_file(AttachmentType::Path(Path::new("./ferris_eyes.png")));
-    //     m
-    // }).await?;
-
-    // msg.channel_id.say(&ctx.http, "ok").await?;
-
-    Ok(())
-}
-
-#[command]
-#[only_in(dm)]
-pub async fn m(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
-
     msg.author
         .dm(&ctx, |m| {
-            m.content("ssup");
             m.embed(|e| {
-                e.title("This is a title");
-                e.description("This is a description");
-                e.image("attachment://ferris_eyes.png");
-                e.fields(vec![
-                    ("This is the first argument", "This is a field body", true),
-                    ("This is the second field", "Both of these fields are inline", true),
-                ]);
-                e.field("First argument", &args.message(), false);
+                e.title(format!("You have applied for the {} hacker role.", &haxor_level));
+                e.description("You can find fictional cases that you have to solve here: https://discordapp.com/channels/429657740562923521/661628899175694336/661629917443915796");
+                e.field("When you are ready with your answer, just dm it to the bot and it will be forwarded to the staff.", "_ _", false);
                 e.footer(|f| {
-                    f.text("This is a footer");
-    
+                    f.text("WhiteHat Hacking https://discord.gg/whAx4qh");
                     f
                 });
-    
                 e
             });
             m
         })
         .await?;
 
-    msg.is_private();
+    Ok(())
+}
+
+async fn create_channel(ctx: &Context,) {
+
+}
+
+async fn apply_command_help(ctx: &Context, msg: &Message) -> CommandResult {
+    msg.channel_id.send_message(&ctx.http, |m| {
+        m.embed(|e| {
+            e.title("Apply for roles.");
+            e.description("You can apply for 3 different roles, Good, Experienced and Master hacker.");
+            e.field("Good hacker `--apply g`", "https://discordapp.com/channels/429657740562923521/661628899175694336/661629917443915796", false);
+            e.field("Experienced hacker `--apply e`", "https://discordapp.com/channels/429657740562923521/661628899175694336/661630071274209352", false);
+            e.field("Master hacker `--apply m`", "https://discordapp.com/channels/429657740562923521/661628899175694336/661630182104498177", false);
+            e.field("After typing the right command, expect a dm from the bot to start the application.", "WhiteHat Hacking https://discord.gg/whAx4qh", false);
+            e
+        });
+        m
+    }).await?;
     Ok(())
 }
 

@@ -77,7 +77,7 @@ pub async fn hacksplain(ctx: &Context, msg: &Message) -> CommandResult {
         return Ok(());
     }
 
-    msg.channel_id.say(&ctx.http, "You just need to know how to G7 DLL inject the kernel with making a GUI to get any IP you want, does not matter if P2P or E2E can find anything...".to_string()).await?;
+    msg.channel_id.say(&ctx.http, "You just need to know how to G7 DLL inject the kernel with making a GUI to get any IP you want, does not matter if P2P or E2E can find anything. Important! To do G7 DLL injection of the kernel you need to bypass firewall by sending a nuke.".to_string()).await?;
 
     Ok(())
 }
@@ -219,6 +219,49 @@ pub async fn ping(ctx: &Context, msg: &Message) -> CommandResult {
         msg.reply(ctx, "Failed locking the shard manager.").await?;
         return Ok(());
     }
+
+    Ok(())
+}
+
+#[command]
+pub async fn hax(ctx: &Context, msg: &Message) -> CommandResult {
+    // let msg = msg.channel_id.send_message(&ctx.http, |m| {
+    //     // m.content("Hello, World for all!");
+    //     m.embed(|e| {
+    //         // e.title("This is a title");
+    //         // e.description("This is a description");
+    //         e.image("https://cdn.discordapp.com/attachments/429676012129746944/776212421852659712/newbie_hacker.jpg");
+    //         // e.fields(vec![
+    //         //     ("This is the first field", "This is a field body", true),
+    //         //     ("This is the second field", "Both of these fields are inline", true),
+    //         // ]);
+    //         // e.field("This is the third field", "This is not an inline field", false);
+    //         // e.footer(|f| {
+    //         //     f.text("This is a footer");
+
+    //         //     f
+    //         // });
+
+    //         e
+    //     });
+    //     // m.add_file(AttachmentType::Path(Path::new("./ferris_eyes.png")));
+    //     m
+    // }).await;
+
+    msg.channel_id.say(&ctx, "https://cdn.discordapp.com/attachments/429676012129746944/776212421852659712/newbie_hacker.jpg").await?;
+
+    // if let Err(why) = msg {
+    //     println!("Error sending message: {:?}", why);
+    // }
+    Ok(())
+}
+
+#[command]
+pub async fn dunning(ctx: &Context, msg: &Message) -> CommandResult {
+
+
+    msg.channel_id.say(&ctx, "https://cdn.discordapp.com/attachments/429676012129746944/785077558731341844/dunning_kruger_effect.png").await?;
+
 
     Ok(())
 }

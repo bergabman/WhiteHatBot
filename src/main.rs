@@ -47,45 +47,20 @@ impl EventHandler for Handler {
 
     async fn message(&self, ctx: Context, msg: Message) {
 
-        no_prefix(&ctx, &msg).await;
+        // no_prefix(&ctx, &msg).await;
 
-        if msg.is_private() {
-            println!("message received {}", msg.content);
-            println!("message received {}", msg.timestamp);
-            println!("message received {}", msg.author);
+        // if msg.is_private() {
+        //     println!("message received {}", msg.content);
+        //     println!("message received {}", msg.timestamp);
+        //     println!("message received {}", msg.author);
 
-        }
+        // }
         if msg.content == "!hello" {
             // The create message builder allows you to easily create embeds and messages
             // using a builder syntax.
             // This example will create a message that says "Hello, World!", with an embed that has
             // a title, description, three fields, and a footer.
-            let msg = msg.channel_id.send_message(&ctx.http, |m| {
-                m.content("Hello, World for all!");
-                m.embed(|e| {
-                    e.title("This is a title");
-                    e.description("This is a description");
-                    e.image("attachment://ferris_eyes.png");
-                    e.fields(vec![
-                        ("This is the first field", "This is a field body", true),
-                        ("This is the second field", "Both of these fields are inline", true),
-                    ]);
-                    e.field("This is the third field", "This is not an inline field", false);
-                    e.footer(|f| {
-                        f.text("This is a footer");
-
-                        f
-                    });
-
-                    e
-                });
-                // m.add_file(AttachmentType::Path(Path::new("./ferris_eyes.png")));
-                m
-            }).await;
-
-            if let Err(why) = msg {
-                println!("Error sending message: {:?}", why);
-            }
+       
         }
     }
 
@@ -95,7 +70,7 @@ impl EventHandler for Handler {
 }
 
 #[group]
-#[commands(quit, multiply, divide, howtohack, hacksplain, google, ping, apply, m)]
+#[commands(quit, multiply, divide, howtohack, hacksplain, google, ping, hax, dunning /*apply*/)]
 struct General;
 
 #[tokio::main]
@@ -126,7 +101,11 @@ async fn main() {
 
     // Create the framework
     let framework = StandardFramework::new()
-        .configure(|c| c.owners(owners).prefix(&config.marker).no_dm_prefix(true) )
+        .configure(|c| c.owners(owners)
+                        .prefix(&config.marker)
+                        .no_dm_prefix(true)
+                    )
+        .normal_message(no_prefix)
         .group(&GENERAL_GROUP);
 
     let mut client = Client::builder(&config.own_bot_token)
