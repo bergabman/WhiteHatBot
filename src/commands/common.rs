@@ -73,9 +73,9 @@ pub async fn hacksplain(ctx: &Context, msg: &Message) -> CommandResult {
     let config = data
         .get::<Config>()
         .expect("Expected Config in SharedMap, Please check your botconfig.toml");
-    if !config.channel_ids.contains(&msg.channel_id) {
-        return Ok(());
-    }
+    // if !config.channel_ids.contains(&msg.channel_id) {
+    //     return Ok(());
+    // }
 
     msg.channel_id.say(&ctx.http, "You just need to know how to G7 DLL inject the kernel with making a GUI to get any IP you want, does not matter if P2P or E2E can find anything. Important! To do G7 DLL injection of the kernel you need to bypass firewall by sending a nuke.".to_string()).await?;
 
@@ -181,9 +181,9 @@ pub async fn google(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
     let config = data
         .get::<Config>()
         .expect("Expected Config in SharedMap, Please check your botconfig.toml");
-    if !config.channel_ids.contains(&msg.channel_id) {
-        return Ok(());
-    }
+    // if !config.channel_ids.contains(&msg.channel_id) {
+    //     return Ok(());
+    // }
     let base = "https://lmddgtfy.net/?q={}";
     if args.message() == "" {
         msg.reply(&ctx, "Hmm? No arguments found.").await?;
@@ -201,9 +201,9 @@ pub async fn ping(ctx: &Context, msg: &Message) -> CommandResult {
     let config = data
         .get::<Config>()
         .expect("Expected Config in SharedMap, Please check your botconfig.toml");
-    if !config.channel_ids.contains(&msg.channel_id) {
-        return Ok(());
-    }
+    // if !config.channel_ids.contains(&msg.channel_id) {
+    //     return Ok(());
+    // }
 
     if let Some(manager) = data.get::<ShardManagerContainer>() {
         let lock = manager.lock().await;
