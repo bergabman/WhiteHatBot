@@ -13,9 +13,9 @@ pub async fn multiply(ctx: &Context, msg: &Message, mut args: Args) -> CommandRe
     let config = data
         .get::<Config>()
         .expect("Expected Config in SharedMap, Please check your botconfig.toml");
-    if !config.channel_ids.contains(&msg.channel_id) {
-        return Ok(());
-    }
+    // if !config.channel_ids.contains(&msg.channel_id) {
+    //     return Ok(());
+    // }
     let one = match args.single::<f64>() {
         Ok(one) => one,
         Err(_) => {
@@ -43,9 +43,9 @@ pub async fn divide(ctx: &Context, msg: &Message, mut args: Args) -> CommandResu
     let config = data
         .get::<Config>()
         .expect("Expected Config in SharedMap, Please check your botconfig.toml");
-    if !config.channel_ids.contains(&msg.channel_id) {
-        return Ok(());
-    }
+    // if !config.channel_ids.contains(&msg.channel_id) {
+    //     return Ok(());
+    // }
     let one = match args.single::<f64>() {
         Ok(one) => one,
         Err(_) => {
