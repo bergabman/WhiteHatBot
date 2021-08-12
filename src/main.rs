@@ -70,7 +70,7 @@ impl EventHandler for Handler {
 }
 
 #[group]
-#[commands(quit, multiply, divide, howtohack, hacksplain, google, ping, hax, dunning /*apply*/)]
+#[commands(quit, multiply, divide, howtohack, hacksplain, google, ping, hax, dunning, howtoask /*apply*/)]
 struct General;
 
 #[tokio::main]
@@ -105,7 +105,7 @@ async fn main() {
                         .prefix(&config.marker)
                         .no_dm_prefix(true)
                     )
-        .normal_message(no_prefix)
+        // .normal_message(no_prefix)
         .group(&GENERAL_GROUP);
 
     let mut client = Client::builder(&config.own_bot_token)

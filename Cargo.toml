@@ -1,4 +1,4 @@
-cargo-features = ["strip"]
+#cargo-features = ["strip"]
 
 [package]
 name = "WhiteHatBot"
@@ -24,7 +24,7 @@ version = "0.2"
 features = ["macros", "signal"]
 
 [profile.release]
-strip = 'symbols' # strip simbols equals to strip --strip-all
+#strip = 'symbols' # strip simbols equals to strip --strip-all
 #opt-level = 'z'  # Optimize for size.
 lto = true # enable link time optimization
 panic = 'abort'

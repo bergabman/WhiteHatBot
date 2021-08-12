@@ -3,7 +3,7 @@ use serenity::client::Context;
 use serenity::framework::standard::macros::hook;
 use serenity::framework::standard::CommandResult;
 
-#[hook]
+// #[hook]
 pub async fn no_prefix(ctx: &Context, msg: &Message) {
 
     if msg.content.starts_with("+") {

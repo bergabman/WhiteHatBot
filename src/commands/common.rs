@@ -265,3 +265,14 @@ pub async fn dunning(ctx: &Context, msg: &Message) -> CommandResult {
 
     Ok(())
 }
+
+#[command]
+pub async fn howtoask(ctx: &Context, msg: &Message) -> CommandResult {
+
+
+    msg.channel_id.say(&ctx, "https://dontasktoask.com/").await?;
+    msg.channel_id.say(&ctx, "https://stackoverflow.com/help/how-to-ask").await?;
+
+
+    Ok(())
+}
