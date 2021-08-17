@@ -9,3 +9,7 @@ marker = "--"
 # channels fot the bot to communicate on
 # ex. channel_ids = [717108559525293147, 754320391173827756]
 channel_ids = []
+
+# role ids to be added upon acceptin rules
+#ex. default_roles = [431853093815189514, 431593983605604372]
+default_roles = []

@@ -6,6 +6,7 @@ use commands::{common::*, no_prefix::*, owner::*, role_applications::*};
 use anyhow::Result;
 use serde_derive::Deserialize;
 use serenity::client::bridge::gateway::GatewayIntents;
+use serenity::model::id::RoleId;
 use serenity::model::{channel::Message, id::ChannelId};
 use serenity::prelude::*;
 
@@ -26,7 +27,7 @@ struct Config {
     marker: String, // Marker string to recognise discord messages sent to the bot, defind in botconfig.toml.
     own_bot_token: String, // Own bot token used to connect with discord.
     channel_ids: Vec<ChannelId>, // Channels the bot listens on, definsed in botconfig.toml.
-    default_role: u64, // Role to be added after accepting rules
+    default_roles: Vec<RoleId>, // Role to be added after accepting rules
 }
 
 struct ShardManagerContainer;
@@ -111,10 +112,10 @@ impl EventHandler for Handler {
             if old_member.pending && !new.pending {
                 let data = ctx.data.read().await;
                 if let Some(config) = data.get::<Config>() {
-                    match new.add_role(&ctx, config.default_role).await {
+                    match new.add_roles(&ctx, &config.default_roles).await {
                         Ok(_) => {
                             let nickname = new.display_name();
-                            println!("User: {} has accepted screening. Added role.", nickname);
+                            println!("User: {} has accepted screening. Added role(s).", nickname);
                         }
                         Err(err) => println!("Error occurred adding role: {}", err),
                     }
