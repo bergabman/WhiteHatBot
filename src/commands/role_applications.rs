@@ -3,7 +3,6 @@ use crate::Config;
 use serenity::framework::standard::{macros::command, Args, CommandResult};
 use serenity::model::prelude::*;
 use serenity::{prelude::*, utils::MessageBuilder};
-use serenity::model::channel::GuildChannel;
 
 #[command]
 pub async fn apply(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
@@ -85,8 +84,7 @@ pub async fn apply(ctx: &Context, msg: &Message, mut args: Args) -> CommandResul
 
 #[command]
 #[only_in(dm)]
-pub async fn m(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
-
+pub async fn m(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
     msg.author
         .dm(&ctx, |m| {
             m.content("ssup");
@@ -96,15 +94,19 @@ pub async fn m(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
                 e.image("attachment://ferris_eyes.png");
                 e.fields(vec![
                     ("This is the first argument", "This is a field body", true),
-                    ("This is the second field", "Both of these fields are inline", true),
+                    (
+                        "This is the second field",
+                        "Both of these fields are inline",
+                        true,
+                    ),
                 ]);
                 e.field("First argument", &args.message(), false);
                 e.footer(|f| {
                     f.text("This is a footer");
-    
+
                     f
                 });
-    
+
                 e
             });
             m
