@@ -4,7 +4,7 @@ use crate::ShardManagerContainer;
 use serenity::framework::standard::{macros::command, Args, CommandResult};
 use serenity::model::prelude::*;
 use serenity::{prelude::*, utils::Colour};
-use tokio::time::{delay_for, Duration};
+use tokio::time::{sleep, Duration};
 use urlencoding::encode;
 
 #[command]
@@ -108,7 +108,7 @@ pub async fn howtohack(ctx: &Context, msg: &Message) -> CommandResult {
             )
             .await?;
 
-        delay_for(Duration::from_millis(6000)).await;
+        sleep(Duration::from_millis(6000)).await;
 
         let _ = message1.edit(&ctx, |m| {
             m.content("");

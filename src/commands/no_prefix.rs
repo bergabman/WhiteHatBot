@@ -1,23 +1,11 @@
-use serenity::model::prelude::Message;
 use serenity::client::Context;
-use serenity::framework::standard::macros::hook;
-use serenity::framework::standard::CommandResult;
+use serenity::model::prelude::Message;
 
-// #[hook]
-pub async fn no_prefix(ctx: &Context, msg: &Message) {
-
-    if msg.content.starts_with("+") {
-        match surf::get("http://white-hat-mail-1xnauai.glitch.me/").await {
-            Ok(mut res) => {
-                println!("WhiteHatMail was waken up by {}\nSurf result : {}", msg.author.name, res.body_string().await.unwrap() );
-                return;
-            },
-            Err(e) => {
-                println!("Failed to wake WhiteHatMail {}", e.to_string());
-                return;
-            },
-        };
-        // println!("message received normal {}", res.body_string().await.unwrap());
+pub async fn no_prefix(_ctx: &Context, msg: &Message) {
+    if msg.is_private() {
+        println!("message received inner {}", msg.content);
+        println!("message received inner {}", msg.timestamp);
+        println!("message received inner {}", msg.author);
     }
 
     
@@ -56,4 +44,3 @@ pub async fn no_prefix(ctx: &Context, msg: &Message) {
     //     println!("Error sending message: {:?}", why);
     // }
 }
-

@@ -1,12 +1,14 @@
 #![allow(non_snake_case)]
 
 mod commands;
-use commands::{common::*, owner::*, role_applications::*, no_prefix::*};
+use commands::{common::*, no_prefix::*, owner::*, role_applications::*};
 
 use anyhow::Result;
 use serde_derive::Deserialize;
-use serenity::model::{id::ChannelId, channel::Message};
-use serenity::{prelude::*};
+use serenity::client::bridge::gateway::GatewayIntents;
+use serenity::model::id::RoleId;
+use serenity::model::{channel::Message, id::ChannelId};
+use serenity::prelude::*;
 
 use std::{collections::HashSet, sync::Arc};
 
@@ -17,7 +19,7 @@ use serenity::{
     http::Http,
     model::{event::ResumedEvent, gateway::Ready},
 };
-use tracing::{info};
+use tracing::info;
 use tracing_subscriber::{EnvFilter, FmtSubscriber};
 
 #[derive(Debug, Deserialize)]
@@ -25,6 +27,7 @@ struct Config {
     marker: String, // Marker string to recognise discord messages sent to the bot, defind in botconfig.toml.
     own_bot_token: String, // Own bot token used to connect with discord.
     channel_ids: Vec<ChannelId>, // Channels the bot listens on, definsed in botconfig.toml.
+    default_roles: Vec<RoleId>, // Role to be added after accepting rules
 }
 
 struct ShardManagerContainer;
@@ -55,15 +58,84 @@ impl EventHandler for Handler {
         //     println!("message received {}", msg.author);
 
         // }
+        no_prefix(&ctx, &msg).await;
+
+        if msg.is_private() {
+            println!("message received {}", msg.content);
+            println!("message received {}", msg.timestamp);
+            println!("message received {}", msg.author);
+        }
         if msg.content == "!hello" {
             // The create message builder allows you to easily create embeds and messages
             // using a builder syntax.
             // This example will create a message that says "Hello, World!", with an embed that has
             // a title, description, three fields, and a footer.
+<<<<<<< HEAD
        
+=======
+            let msg = msg
+                .channel_id
+                .send_message(&ctx.http, |m| {
+                    m.content("Hello, World for all!");
+                    m.embed(|e| {
+                        e.title("This is a title");
+                        e.description("This is a description");
+                        e.image("attachment://ferris_eyes.png");
+                        e.fields(vec![
+                            ("This is the first field", "This is a field body", true),
+                            (
+                                "This is the second field",
+                                "Both of these fields are inline",
+                                true,
+                            ),
+                        ]);
+                        e.field(
+                            "This is the third field",
+                            "This is not an inline field",
+                            false,
+                        );
+                        e.footer(|f| {
+                            f.text("This is a footer");
+
+                            f
+                        });
+
+                        e
+                    });
+                    // m.add_file(AttachmentType::Path(Path::new("./ferris_eyes.png")));
+                    m
+                })
+                .await;
+
+            if let Err(why) = msg {
+                println!("Error sending message: {:?}", why);
+            }
+>>>>>>> 910c09d0773b7720b1d98858b8362351ab29e652
         }
     }
-
+    async fn guild_member_update(
+        &self,
+        ctx: Context,
+        old_if_available: Option<serenity::model::guild::Member>,
+        mut new: serenity::model::guild::Member,
+    ) {
+        // This compares the old with the new to check if pending bool went from true to false
+        // The bool being false means the user accepted the screening and a default role is added
+        if let Some(old_member) = old_if_available {
+            if old_member.pending && !new.pending {
+                let data = ctx.data.read().await;
+                if let Some(config) = data.get::<Config>() {
+                    match new.add_roles(&ctx, &config.default_roles).await {
+                        Ok(_) => {
+                            let nickname = new.display_name();
+                            println!("User: {} has accepted screening. Added role(s).", nickname);
+                        }
+                        Err(err) => println!("Error occurred adding role: {}", err),
+                    }
+                }
+            }
+        }
+    }
     async fn resume(&self, _: Context, _: ResumedEvent) {
         info!("Resumed");
     }
@@ -101,14 +173,19 @@ async fn main() {
 
     // Create the framework
     let framework = StandardFramework::new()
+<<<<<<< HEAD
         .configure(|c| c.owners(owners)
                         .prefix(&config.marker)
                         .no_dm_prefix(true)
                     )
         // .normal_message(no_prefix)
+=======
+        .configure(|c| c.owners(owners).prefix(&config.marker).no_dm_prefix(true))
+>>>>>>> 910c09d0773b7720b1d98858b8362351ab29e652
         .group(&GENERAL_GROUP);
 
     let mut client = Client::builder(&config.own_bot_token)
+        .intents(GatewayIntents::all())
         .framework(framework)
         .event_handler(Handler)
         .await
