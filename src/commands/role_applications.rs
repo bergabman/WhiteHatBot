@@ -34,44 +34,9 @@ pub async fn apply(ctx: &Context, msg: &Message, mut args: Args) -> CommandResul
         return Ok(());
     }
 
-<<<<<<< HEAD
-=======
-    // let msg = msg.channel_id.send_message(&ctx.http, |m| {
-    //     m.content("Hello, World!");
-    //     m.embed(|e| {
-    //         e.title("This is a title");
-    //         e.description("This is a description");
-    //         e.image("attachment://ferris_eyes.png");
-    //         e.fields(vec![
-    //             ("This is the first argument", "This is a field body", true),
-    //             ("This is the second field", "Both of these fields are inline", true),
-    //         ]);
-    //         e.field("First argument", &first_arg, false);
-    //         e.footer(|f| {
-    //             f.text("This is a footer");
-
-    //             f
-    //         });
-
-    //         e
-    //     });
-    //     m.add_file(AttachmentType::Path(Path::new("./ferris_eyes.png")));
-    //     m
-    // }).await?;
-
-    // msg.channel_id.say(&ctx.http, "ok").await?;
-
-    Ok(())
-}
-
-#[command]
-#[only_in(dm)]
-pub async fn m(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
->>>>>>> 910c09d0773b7720b1d98858b8362351ab29e652
     msg.author
         .dm(&ctx, |m| {
             m.embed(|e| {
-<<<<<<< HEAD
                 e.title(format!("You have applied for the {} hacker role.", &haxor_level));
                 e.description("You can find fictional cases that you have to solve here: https://discordapp.com/channels/429657740562923521/661628899175694336/661629917443915796");
                 e.field("When you are ready with your answer, just dm it to the bot and it will be forwarded to the staff.", "_ _", false);
@@ -79,26 +44,6 @@ pub async fn m(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
                     f.text("WhiteHat Hacking https://discord.gg/whAx4qh");
                     f
                 });
-=======
-                e.title("This is a title");
-                e.description("This is a description");
-                e.image("attachment://ferris_eyes.png");
-                e.fields(vec![
-                    ("This is the first argument", "This is a field body", true),
-                    (
-                        "This is the second field",
-                        "Both of these fields are inline",
-                        true,
-                    ),
-                ]);
-                e.field("First argument", &args.message(), false);
-                e.footer(|f| {
-                    f.text("This is a footer");
-
-                    f
-                });
-
->>>>>>> 910c09d0773b7720b1d98858b8362351ab29e652
                 e
             });
             m

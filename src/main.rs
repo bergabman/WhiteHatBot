@@ -70,47 +70,7 @@ impl EventHandler for Handler {
             // using a builder syntax.
             // This example will create a message that says "Hello, World!", with an embed that has
             // a title, description, three fields, and a footer.
-<<<<<<< HEAD
        
-=======
-            let msg = msg
-                .channel_id
-                .send_message(&ctx.http, |m| {
-                    m.content("Hello, World for all!");
-                    m.embed(|e| {
-                        e.title("This is a title");
-                        e.description("This is a description");
-                        e.image("attachment://ferris_eyes.png");
-                        e.fields(vec![
-                            ("This is the first field", "This is a field body", true),
-                            (
-                                "This is the second field",
-                                "Both of these fields are inline",
-                                true,
-                            ),
-                        ]);
-                        e.field(
-                            "This is the third field",
-                            "This is not an inline field",
-                            false,
-                        );
-                        e.footer(|f| {
-                            f.text("This is a footer");
-
-                            f
-                        });
-
-                        e
-                    });
-                    // m.add_file(AttachmentType::Path(Path::new("./ferris_eyes.png")));
-                    m
-                })
-                .await;
-
-            if let Err(why) = msg {
-                println!("Error sending message: {:?}", why);
-            }
->>>>>>> 910c09d0773b7720b1d98858b8362351ab29e652
         }
     }
     async fn guild_member_update(
@@ -128,7 +88,7 @@ impl EventHandler for Handler {
                     match new.add_roles(&ctx, &config.default_roles).await {
                         Ok(_) => {
                             let nickname = new.display_name();
-                            println!("User: {} has accepted screening. Added role(s).", nickname);
+                            // println!("User: {} has accepted screening. Added role(s).", nickname);
                         }
                         Err(err) => println!("Error occurred adding role: {}", err),
                     }
@@ -173,15 +133,11 @@ async fn main() {
 
     // Create the framework
     let framework = StandardFramework::new()
-<<<<<<< HEAD
         .configure(|c| c.owners(owners)
                         .prefix(&config.marker)
                         .no_dm_prefix(true)
                     )
         // .normal_message(no_prefix)
-=======
-        .configure(|c| c.owners(owners).prefix(&config.marker).no_dm_prefix(true))
->>>>>>> 910c09d0773b7720b1d98858b8362351ab29e652
         .group(&GENERAL_GROUP);
 
     let mut client = Client::builder(&config.own_bot_token)
