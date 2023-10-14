@@ -1,21 +1,24 @@
 # WhiteHatBot
 Discord bot for the WhiteHat Hacking discord server. 
-
 The bot is a Rustlang copy of the javascript based whitehatmail discord bot, made by `[Mod]Basically` on the WhiteHat Hacking discord server.
 Credits goes to him for the function ideas and javascript implementation! 
+
 ---
+
 ## Running:
 1. Rename `botconfig_example.toml` to `botconfig.toml`
 2. Configure `botconfig.toml` appropriately
-    - `own_bot_token` is the bot's token. Get it from [Discord Deveopler Portal](https://discord.com/developers/applications)
+    - `own_bot_token` is the bot's token. Get it from [Discord Deveopler Portal](https://discord.com/developers/applications).
     - `channel_ids` contains the ID's of channels the bot is able to communicate on.
-    - `default_roles` contains the ID's of roles which are assigned to members upon accepting the rules
+    - `default_roles` contains the ID's of roles which are assigned to members upon accepting the rules.
 3. Compile and run
 
 ## Running on RPi 2/3/4:
 If you want to run the bot on a Raspberry Pi 2/3/4, use `rust cross` to compile the executable.
+
 Command:
 ```cross build +nightly --target aarch64-unknown-linux-gnu --release```
+
 ---
 
 ## Commands:
@@ -25,6 +28,7 @@ There are `3` categories for currently available commands:
 3. [Owner Only](#owner-only-commands)
 
 ---
+
 ### Common commands:
 | Command        | Description                                                                               |
 |----------------|-------------------------------------------------------------------------------------------|
@@ -47,5 +51,7 @@ There are `3` categories for currently available commands:
 | Command | Description        |
 |---------|--------------------|
 | `quit`  | Shuts down the bot |
+
+---
 ---
 
