@@ -1,5 +1,6 @@
 # WhiteHatBot
-Discord bot for the WhiteHat Hacking discord server. 
+Discord bot for the WhiteHat Hacking discord server.
+
 The bot is a Rustlang copy of the javascript based whitehatmail discord bot, made by `[Mod]Basically` on the WhiteHat Hacking discord server.
 Credits goes to him for the function ideas and javascript implementation! 
 
