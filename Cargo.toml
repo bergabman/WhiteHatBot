@@ -44,8 +44,8 @@ features = [
 ]
 
 [profile.release]
-#strip = 'symbols' # strip simbols equals to strip --strip-all
-#opt-level = 'z'  # Optimize for size.
+strip = 'symbols' # strip simbols equals to strip --strip-all
+opt-level = 'z'  # Optimize for size.
 lto = true        # enable link time optimization
-# panic = 'abort'
+panic = 'abort'
 codegen-units = 1
