@@ -242,17 +242,11 @@ pub async fn bans(ctx: &Context, msg: &Message) -> CommandResult {
     let mut all_bans_count = 0;
 
     let mut bans: Vec<Ban> = vec![];
-        loop {
+    loop {
         if let Some(user_id) = last_user_id {
             bans = ctx.http.get_bans(msg.guild_id.unwrap().into(), Some(UserPagination::After(user_id.into())), None).await.unwrap();
-            println!("Ban count on top {}", &bans.len());
-
-            // all_bans_count += bans.len();
         } else {
             bans = ctx.http.get_bans(msg.guild_id.unwrap().into(), None, None).await.unwrap();
-            println!("Ban count in middle {}", &bans.len());
-
-            // all_bans_count += bans.len();
         }
 
         all_bans_count += bans.len();
