@@ -5,20 +5,22 @@ use commands::{common::*, no_prefix::*, owner::*, role_applications::*};
 
 use anyhow::Result;
 use serde_derive::Deserialize;
-use serenity::client::bridge::gateway::GatewayIntents;
-use serenity::model::id::RoleId;
-use serenity::model::{channel::Message, id::ChannelId};
+// use serenity::client::bridge::gateway::GatewayIntents;
+// use serenity::model::id::RoleId;
+use serenity::{model::{channel::Message, id::{ChannelId, RoleId}, gateway::GatewayIntents}, all::GuildMemberUpdateEvent};
 use serenity::prelude::*;
 
 use std::{collections::HashSet, sync::Arc};
 
 use serenity::{
     async_trait,
-    client::bridge::gateway::ShardManager,
     framework::{standard::macros::group, StandardFramework},
     http::Http,
     model::{event::ResumedEvent, gateway::Ready},
 };
+
+// use serenity::client::bridge::gateway::{ShardId, ShardManager};
+use serenity::all::{ShardId, ShardManager};
 use tracing::info;
 use tracing_subscriber::{EnvFilter, FmtSubscriber};
 
@@ -33,7 +35,8 @@ struct Config {
 struct ShardManagerContainer;
 
 impl TypeMapKey for ShardManagerContainer {
-    type Value = Arc<Mutex<ShardManager>>;
+    // type Value = Arc<Mutex<ShardManager>>;
+    type Value = Arc<ShardManager>;
 }
 
 impl TypeMapKey for Config {
@@ -73,21 +76,17 @@ impl EventHandler for Handler {
        
         }
     }
-    async fn guild_member_update(
-        &self,
-        ctx: Context,
-        old_if_available: Option<serenity::model::guild::Member>,
-        mut new: serenity::model::guild::Member,
-    ) {
+
+    async fn guild_member_update(&self, ctx: Context, old_if_available: Option<serenity::model::guild::Member>, mut new: Option<serenity::model::guild::Member>, event: GuildMemberUpdateEvent ) {
         // This compares the old with the new to check if pending bool went from true to false
         // The bool being false means the user accepted the screening and a default role is added
         if let Some(old_member) = old_if_available {
-            if old_member.pending && !new.pending {
+            if old_member.pending && !new.as_ref().unwrap().pending {
                 let data = ctx.data.read().await;
                 if let Some(config) = data.get::<Config>() {
-                    match new.add_roles(&ctx, &config.default_roles).await {
+                    match new.clone().unwrap().add_roles(&ctx, &config.default_roles).await {
                         Ok(_) => {
-                            let nickname = new.display_name();
+                            let nickname = new.as_ref().unwrap().display_name();
                             // println!("User: {} has accepted screening. Added role(s).", nickname);
                         }
                         Err(err) => println!("Error occurred adding role: {}", err),
@@ -101,8 +100,8 @@ impl EventHandler for Handler {
     }
 }
 
-#[group]
-#[commands(quit, multiply, divide, howtohack, hacksplain, google, ping, hax, dunning, howtoask /*apply*/)]
+#[group("general")]
+#[commands(quit, multiply, divide, howtohack, hacksplain, google, ping, hax, dunning, howtoask, bans /*apply*/)]
 struct General;
 
 #[tokio::main]
@@ -118,30 +117,36 @@ async fn main() {
 
     tracing::subscriber::set_global_default(subscriber).expect("Failed to start logging");
 
-    let http = Http::new_with_token(&config.own_bot_token);
+    let http = Http::new(&config.own_bot_token);
 
     // Fetch bot's owners and id
-    let (owners, _bot_id) = match http.get_current_application_info().await {
+    let (owners, bot_id) = match http.get_current_application_info().await {
         Ok(info) => {
             let mut owners = HashSet::new();
-            owners.insert(info.owner.id);
+            owners.insert(info.owner.unwrap().id);
 
             (owners, info.id)
         }
         Err(why) => panic!("Could not access application info: {:?}", why),
     };
 
+        // Build our client.
+    let intents = GatewayIntents::all();
     // Create the framework
-    let framework = StandardFramework::new()
-        .configure(|c| c.owners(owners)
-                        .prefix(&config.marker)
-                        .no_dm_prefix(true)
-                    )
-        // .normal_message(no_prefix)
-        .group(&GENERAL_GROUP);
+    // let framework = StandardFramework::new()
+    //     .configure(|c| {
+    //                 c.owners(owners)
+    //                  .prefix(&config.marker)
+    //                  .no_dm_prefix(true)}).group(&GENERAL_GROUP);
 
-    let mut client = Client::builder(&config.own_bot_token)
-        .intents(GatewayIntents::all())
+    let framework = StandardFramework::new().group(&GENERAL_GROUP);
+    framework.configure(|c| 
+        c.with_whitespace(true)
+            .prefix(&config.marker)
+            .owners(owners));
+    
+
+    let mut client = Client::builder(&config.own_bot_token, intents)
         .framework(framework)
         .event_handler(Handler)
         .await
@@ -161,7 +166,7 @@ async fn main() {
         tokio::signal::ctrl_c()
             .await
             .expect("Could not register ctrl+c handler");
-        shard_manager.lock().await.shutdown_all().await;
+        shard_manager.shutdown_all().await;
     });
 
     if let Err(why) = client.start().await {
