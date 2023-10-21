@@ -139,6 +139,8 @@ async fn main() {
     //                  .prefix(&config.marker)
     //                  .no_dm_prefix(true)}).group(&GENERAL_GROUP);
 
+    println!("GatewayIntents set {:#?}", &intents);
+
     let framework = StandardFramework::new().group(&GENERAL_GROUP);
     framework.configure(|c| 
         c.with_whitespace(true)
