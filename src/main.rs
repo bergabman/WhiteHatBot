@@ -77,24 +77,24 @@ impl EventHandler for Handler {
         }
     }
 
-    async fn guild_member_update(&self, ctx: Context, old_if_available: Option<serenity::model::guild::Member>, mut new: Option<serenity::model::guild::Member>, event: GuildMemberUpdateEvent ) {
-        // This compares the old with the new to check if pending bool went from true to false
-        // The bool being false means the user accepted the screening and a default role is added
-        if let Some(old_member) = old_if_available {
-            if old_member.pending && !new.as_ref().unwrap().pending {
-                let data = ctx.data.read().await;
-                if let Some(config) = data.get::<Config>() {
-                    match new.clone().unwrap().add_roles(&ctx, &config.default_roles).await {
-                        Ok(_) => {
-                            let nickname = new.as_ref().unwrap().display_name();
-                            // println!("User: {} has accepted screening. Added role(s).", nickname);
-                        }
-                        Err(err) => println!("Error occurred adding role: {}", err),
-                    }
-                }
-            }
-        }
-    }
+    // async fn guild_member_update(&self, ctx: Context, old_if_available: Option<serenity::model::guild::Member>, mut new: Option<serenity::model::guild::Member>, event: GuildMemberUpdateEvent ) {
+    //     // This compares the old with the new to check if pending bool went from true to false
+    //     // The bool being false means the user accepted the screening and a default role is added
+    //     if let Some(old_member) = old_if_available {
+    //         if old_member.pending && !new.as_ref().unwrap().pending {
+    //             let data = ctx.data.read().await;
+    //             if let Some(config) = data.get::<Config>() {
+    //                 match new.clone().unwrap().add_roles(&ctx, &config.default_roles).await {
+    //                     Ok(_) => {
+    //                         let nickname = new.as_ref().unwrap().display_name();
+    //                         // println!("User: {} has accepted screening. Added role(s).", nickname);
+    //                     }
+    //                     Err(err) => println!("Error occurred adding role: {}", err),
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
     async fn resume(&self, _: Context, _: ResumedEvent) {
         info!("Resumed");
     }
